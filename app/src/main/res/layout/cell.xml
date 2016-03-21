@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EditText xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cell_text"
+    android:layout_width="40dp"
+    android:layout_height="40dp"
+    android:background="#fff"
+    android:gravity="center"
+    android:inputType="number"
+    android:maxLength="1"
+    android:textColor="#545422" />
