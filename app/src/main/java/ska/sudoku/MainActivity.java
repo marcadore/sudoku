@@ -19,7 +19,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Solv
 
         grid = new Grid(MAX);
         gridView = (GridView) findViewById(R.id.grid);
-        gridView.setGrid(grid);
+        gridView.setGrid(grid, MAX);
 
         solveButton = findViewById(R.id.button_solve);
         solveButton.setOnClickListener(this);
@@ -40,7 +40,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Solv
                 break;
             case R.id.button_reset:
                 grid = new Grid(MAX);
-                gridView.setGrid(grid);
+                gridView.setGrid(grid, MAX);
                 solveButton.setEnabled(true);
                 break;
         }

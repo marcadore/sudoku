@@ -3,8 +3,6 @@ package ska.sudoku;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.ViewGroup;
@@ -38,7 +36,7 @@ public class GridView extends LinearLayout {
         setGravity(Gravity.CENTER);
     }
 
-    public void setGrid(Grid grid) {
+    public void setGrid(Grid grid, int maxValue) {
         removeAllViews();
 
         LinearLayout.LayoutParams rowLp = new LinearLayout.LayoutParams(
@@ -49,8 +47,8 @@ public class GridView extends LinearLayout {
         cellLp.setMargins(1, 1, 1, 1);
 
         LinearLayout row = null;
-        for (int i = 0; i < 9 * 9; i++) {
-            if (i % 9 == 0) {
+        for (int i = 0; i < maxValue * maxValue; i++) {
+            if (i % maxValue == 0) {
                 row = new LinearLayout(getContext());
                 row.setOrientation(LinearLayout.HORIZONTAL);
                 row.setGravity(Gravity.CENTER);
@@ -59,7 +57,7 @@ public class GridView extends LinearLayout {
             }
             CellView cellView = new CellView(getContext());
             cellView.setCell(grid.getCell(i));
-            tintCell(cellView, i);
+            tintCell(cellView, i, maxValue);
             row.addView(cellView, cellLp);
             cellViews.add(cellView);
         }
@@ -74,8 +72,8 @@ public class GridView extends LinearLayout {
         }
     }
 
-    private void tintCell(CellView cellView, int cellNr) {
-        Point p = SudokuHelper.getSection(cellNr, 9);
+    private void tintCell(CellView cellView, int cellNr, int maxValue) {
+        Point p = SudokuHelper.getSection(cellNr, maxValue);
         if (p.equals(0, 0) || p.equals(2, 0) || p.equals(1, 1) || p.equals(0, 2) || p.equals(2, 2))
             cellView.setTextBackgroundColor(Color.LTGRAY);
     }
