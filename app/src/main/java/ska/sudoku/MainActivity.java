@@ -3,6 +3,7 @@ package ska.sudoku;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 public class MainActivity extends Activity implements View.OnClickListener, Solver.SolverCallback {
 
@@ -48,8 +49,10 @@ public class MainActivity extends Activity implements View.OnClickListener, Solv
     }
 
     @Override
-    public void onSolved() {
+    public void onSolved(long timeMillis) {
         if (progressBar != null)
             progressBar.setVisibility(View.GONE);
+        String msg = getString(R.string.toast_solved_time, timeMillis);
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }

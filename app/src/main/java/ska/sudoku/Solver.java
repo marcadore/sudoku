@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 public class Solver extends AsyncTask<Void, Void, Void> {
 
     interface SolverCallback {
-        void onSolved();
+        void onSolved(long timeMillis);
     }
 
     private final int max;
@@ -14,11 +14,18 @@ public class Solver extends AsyncTask<Void, Void, Void> {
     private Grid grid;
     private int firstCell;
     private SolverCallback listener;
+    long startTime;
 
     public Solver(Grid grid, int max, SolverCallback listener) {
         this.grid = grid;
         this.max = max;
         this.listener = listener;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        startTime = System.currentTimeMillis();
     }
 
     @Override
@@ -48,7 +55,7 @@ public class Solver extends AsyncTask<Void, Void, Void> {
         System.out.println(grid.toString());
         updateGrid();
         if (listener != null)
-            listener.onSolved();
+            listener.onSolved(System.currentTimeMillis() - startTime);
     }
 
     private void setCurrentCell(boolean success) {
