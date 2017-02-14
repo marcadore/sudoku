@@ -12,6 +12,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Solv
     private Grid grid;
     private View solveButton;
     private View progressBar;
+    private Solver solver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,16 +34,19 @@ public class MainActivity extends Activity implements View.OnClickListener, Solv
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button_solve:
-                v.setEnabled(false);
+                solveButton.setEnabled(false);
                 gridView.disableCellViews();
                 progressBar.setVisibility(View.VISIBLE);
 
-                new Solver(grid, MAX, this).execute();
+                solver = new Solver(grid, MAX, this);
+                solver.execute();
                 break;
             case R.id.button_reset:
                 grid = new Grid(MAX);
                 gridView.setGrid(grid, MAX);
                 solveButton.setEnabled(true);
+
+                if (solver != null) solver.cancel(true);
                 break;
         }
 
@@ -54,5 +58,10 @@ public class MainActivity extends Activity implements View.OnClickListener, Solv
             progressBar.setVisibility(View.GONE);
         String msg = getString(R.string.toast_solved_time, timeMillis);
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onCancelled() {
+        if (progressBar != null) progressBar.setVisibility(View.GONE);
     }
 }

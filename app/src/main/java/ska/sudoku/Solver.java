@@ -6,6 +6,7 @@ public class Solver extends AsyncTask<Void, Void, Void> {
 
     interface SolverCallback {
         void onSolved(long timeMillis);
+        void onCancelled();
     }
 
     private final int max;
@@ -14,7 +15,7 @@ public class Solver extends AsyncTask<Void, Void, Void> {
     private Grid grid;
     private int firstCell;
     private SolverCallback listener;
-    long startTime;
+    private long startTime;
 
     public Solver(Grid grid, int max, SolverCallback listener) {
         this.grid = grid;
@@ -34,6 +35,8 @@ public class Solver extends AsyncTask<Void, Void, Void> {
 
         boolean lastResult = true;
         while (currentCell < (max * max) && currentCell > -1) {
+            if (isCancelled()) break;
+
             Cell cell = grid.getCell(currentCell);
             if (cell.isPreFilled()) {
                 setCurrentCell(lastResult);
@@ -56,6 +59,11 @@ public class Solver extends AsyncTask<Void, Void, Void> {
         updateGrid();
         if (listener != null)
             listener.onSolved(System.currentTimeMillis() - startTime);
+    }
+
+    @Override
+    protected void onCancelled(Void result) {
+        if (listener != null) listener.onCancelled();
     }
 
     private void setCurrentCell(boolean success) {
