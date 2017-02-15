@@ -2,14 +2,9 @@ package ska.sudoku;
 
 public class Cell {
 
-    interface ValueChangedListener {
-        void onValueChanged(int value);
-    }
-
     private int nr;
     private int value;
     private boolean isPreFilled = false;
-    private ValueChangedListener listener;
 
     public Cell(int nr) {
         this.nr = nr;
@@ -35,16 +30,6 @@ public class Cell {
     public void setPreFilled(int value) {
         isPreFilled = value != 0;
         setValue(value);
-    }
-
-    public void setListener(ValueChangedListener listener) {
-        this.listener = listener;
-    }
-
-    public void notifyChanged() {
-        if (listener != null) {
-            listener.onValueChanged(value);
-        }
     }
 
     @Override

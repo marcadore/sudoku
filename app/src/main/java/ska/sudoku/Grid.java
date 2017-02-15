@@ -17,6 +17,10 @@ public class Grid {
         }
     }
 
+    public int getMaxValue() {
+        return maxValue;
+    }
+
     public Cell getCell(int nr) {
         return grid.get(nr);
     }

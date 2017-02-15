@@ -3,4 +3,5 @@
     <string name="button_solve">lösen</string>
     <string name="button_reset">zurücksetzen</string>
     <string name="toast_solved_time">gelöst in %d ms</string>
+    <string name="toast_not_solvable">Dieses Sudoku is nicht lösbar!</string>
 </resources>

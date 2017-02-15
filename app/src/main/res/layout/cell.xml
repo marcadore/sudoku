@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <EditText xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cell_text"
-    android:layout_width="40dp"
-    android:layout_height="40dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="1dp"
     android:background="#fff"
     android:gravity="center"
     android:inputType="number"
     android:maxLength="1"
-    android:textColor="#545422" />
+    android:minHeight="40dp"
+    android:minWidth="40dp"
+    android:textColor="#545422"
+    tools:text="1" />
