@@ -2,6 +2,7 @@ package ska.sudoku;
 
 import android.graphics.Color;
 import android.graphics.Point;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,9 +10,12 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
+import java.util.List;
 
-    private Grid grid;
+class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
+
+    private List<Cell> grid;
+    private final int maxValue;
     private boolean listenerDisabled = false;
 
     private ViewHolder.TextChangedListener listener = new GridAdapter.ViewHolder.TextChangedListener() {
@@ -19,15 +23,16 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
         public void onTextChanged(String text, int position) {
             if (text.isEmpty() || listenerDisabled) return;
 
-            Cell cell = grid.getCell(position);
+            Cell cell = grid.get(position);
             Integer value = Integer.valueOf(text);
             if (value != null && cell != null)
                 cell.setPreFilled(value);
         }
     };
 
-    public GridAdapter(Grid grid) {
+    GridAdapter(@NonNull final List<Cell> grid, final int maxValue) {
         this.grid = grid;
+        this.maxValue = maxValue;
     }
 
     @Override
@@ -38,23 +43,23 @@ public class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        int value = grid.getCell(position).getValue();
+        int value = grid.get(position).getValue();
         holder.editText.setText(value > 0 ? Integer.toString(value) : null);
         holder.editText.setBackgroundColor(
-                isEvenSection(position, grid.getMaxValue()) ? Color.LTGRAY : Color.WHITE);
+                isEvenSection(position, maxValue) ? Color.LTGRAY : Color.WHITE);
     }
 
     @Override
     public int getItemCount() {
-        return grid.getMaxValue() * grid.getMaxValue();
+        return (int) Math.pow(maxValue, 2);
     }
 
-    public void setGrid(Grid grid) {
+    void updateAdapter(List<Cell> grid) {
         this.grid = grid;
         notifyDataSetChanged();
     }
 
-    public void setCellsDisabled(boolean disabled) {
+    void setCellsDisabled(boolean disabled) {
         listenerDisabled = disabled;
     }
 

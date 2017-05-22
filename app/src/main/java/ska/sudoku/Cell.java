@@ -1,33 +1,33 @@
 package ska.sudoku;
 
-public class Cell {
+class Cell {
 
     private int nr;
     private int value;
     private boolean isPreFilled = false;
 
-    public Cell(int nr) {
+    Cell(int nr) {
         this.nr = nr;
         value = 0;
     }
 
-    public int getNr() {
+    int getNr() {
         return nr;
     }
 
-    public int getValue() {
+    int getValue() {
         return value;
     }
 
-    public void setValue(int value) {
+    void setValue(int value) {
         this.value = value;
     }
 
-    public boolean isPreFilled() {
+    boolean isPreFilled() {
         return isPreFilled;
     }
 
-    public void setPreFilled(int value) {
+    void setPreFilled(int value) {
         isPreFilled = value != 0;
         setValue(value);
     }

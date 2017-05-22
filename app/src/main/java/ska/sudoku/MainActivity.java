@@ -1,26 +1,28 @@
 package ska.sudoku;
 
-import android.app.Activity;
+import android.arch.lifecycle.LifecycleActivity;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements View.OnClickListener, Solver.SolverCallback {
+public class MainActivity extends LifecycleActivity implements View.OnClickListener, Observer<Solver.Result> {
 
-    private static final int MAX = 9;
-    private Grid grid;
+    public static final int MAX = 9;
+    private SudokuViewModel viewModel;
     private View solveButton;
     private View progressBar;
-    private Solver solver;
     private GridAdapter gridAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        grid = new Grid(MAX);
+        viewModel = ViewModelProviders.of(this).get(SudokuViewModel.class);
 
         solveButton = findViewById(R.id.button_solve);
         solveButton.setOnClickListener(this);
@@ -28,11 +30,13 @@ public class MainActivity extends Activity implements View.OnClickListener, Solv
 
         progressBar = findViewById(R.id.progress);
 
-        gridAdapter = new GridAdapter(grid);
+        gridAdapter = new GridAdapter(viewModel.getGrid(), MAX);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.grid);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(this, MAX));
         recyclerView.setAdapter(gridAdapter);
+
+        viewModel.getResult().observe(this, this);
     }
 
     @Override
@@ -42,26 +46,22 @@ public class MainActivity extends Activity implements View.OnClickListener, Solv
                 solveButton.setEnabled(false);
                 gridAdapter.setCellsDisabled(true);
                 progressBar.setVisibility(View.VISIBLE);
-
-                solver = new Solver(MAX, this);
-                solver.execute(grid);
+                viewModel.solve();
                 break;
             case R.id.button_reset:
-                grid = new Grid(MAX);
+                viewModel.cancel();
+                gridAdapter.updateAdapter(viewModel.getGrid());
                 gridAdapter.setCellsDisabled(false);
-                gridAdapter.setGrid(grid);
                 solveButton.setEnabled(true);
-
-                if (solver != null) solver.cancel(true);
                 break;
         }
     }
 
     @Override
-    public void onFinished(Solver.Result result) {
+    public void onChanged(@Nullable Solver.Result result) {
         if (progressBar != null)
             progressBar.setVisibility(View.GONE);
-        gridAdapter.setGrid(result.getGrid());
+        gridAdapter.updateAdapter(result.getGrid());
         String msg = getMessage(result);
         if (msg != null) Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }

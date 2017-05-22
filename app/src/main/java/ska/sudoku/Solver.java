@@ -3,7 +3,9 @@ package ska.sudoku;
 import android.graphics.Point;
 import android.os.AsyncTask;
 
-public class Solver extends AsyncTask<Grid, Void, Solver.Result> {
+import java.util.List;
+
+class Solver extends AsyncTask<List<Cell>, Void, Solver.Result> {
 
     interface SolverCallback {
         void onFinished(Result result);
@@ -15,7 +17,7 @@ public class Solver extends AsyncTask<Grid, Void, Solver.Result> {
     private SolverCallback listener;
     private static long startTime;
 
-    public Solver(int max, SolverCallback listener) {
+    Solver(int max, SolverCallback listener) {
         this.max = max;
         this.listener = listener;
     }
@@ -27,8 +29,8 @@ public class Solver extends AsyncTask<Grid, Void, Solver.Result> {
     }
 
     @Override
-    protected Result doInBackground(Grid... params) {
-        Grid grid = params[0];
+    protected Result doInBackground(List<Cell>... params) {
+        List<Cell> grid = params[0];
         if (!isSolvable(grid)) {
             cancel(true);
             return new Result(grid, Result.Code.NOT_SOLVABLE);
@@ -40,7 +42,7 @@ public class Solver extends AsyncTask<Grid, Void, Solver.Result> {
                 return new Result(grid, Result.Code.USER_CANCELLED);
             }
 
-            Cell cell = grid.getCell(currentCell);
+            Cell cell = grid.get(currentCell);
             if (cell.isPreFilled()) {
                 setCurrentCell(lastResult);
                 continue;
@@ -72,13 +74,13 @@ public class Solver extends AsyncTask<Grid, Void, Solver.Result> {
             currentCell--;
     }
 
-    private boolean solver(Grid grid, Cell cell) {
+    private boolean solver(List<Cell> grid, Cell cell) {
         if (cell.isPreFilled())
             return true;
         
         int value = cell.getValue() + 1;
         while (value <= max) {
-            if (grid.checkValue(cell, value)) {
+            if (SudokuHelper.checkValue(grid, cell, value, MainActivity.MAX)) {
                 cell.setValue(value);
                 return true;
             } else {
@@ -89,9 +91,9 @@ public class Solver extends AsyncTask<Grid, Void, Solver.Result> {
         return false;
     }
 
-    private boolean isSolvable(Grid grid) {
+    private boolean isSolvable(List<Cell> grid) {
         for (int i = 0; i < max * max; i++) {
-            Cell cell = grid.getCell(i);
+            Cell cell = grid.get(i);
             if (cell.isPreFilled()) {
                 if (!isUniqueInRow(grid, i) || !isUniqueInColumn(grid, i) || !isUniqueInSection(grid, i))
                     return false;
@@ -100,30 +102,30 @@ public class Solver extends AsyncTask<Grid, Void, Solver.Result> {
         return true;
     }
 
-    private boolean isUniqueInRow(Grid grid, int cellNr) {
-        int value = grid.getCell(cellNr).getValue();
+    private boolean isUniqueInRow(List<Cell> grid, int cellNr) {
+        int value = grid.get(cellNr).getValue();
         int row = cellNr / max;
         for (int i = 0; i < max; i++) {
             int currentNr = i + max * row;
             if (currentNr == cellNr) continue;
-            if (grid.getCell(currentNr).getValue() == value) return false;
+            if (grid.get(currentNr).getValue() == value) return false;
         }
         return true;
     }
 
-    private boolean isUniqueInColumn(Grid grid, int cellNr) {
-        int value = grid.getCell(cellNr).getValue();
+    private boolean isUniqueInColumn(List<Cell> grid, int cellNr) {
+        int value = grid.get(cellNr).getValue();
         int column = cellNr % max;
         for (int i = 0; i < max; i++) {
             int currentNr = i * max + column;
             if (currentNr == cellNr) continue;
-            if (grid.getCell(currentNr).getValue() == value) return false;
+            if (grid.get(currentNr).getValue() == value) return false;
         }
         return true;
     }
 
-    private boolean isUniqueInSection(Grid grid, int cellNr) {
-        int value = grid.getCell(cellNr).getValue();
+    private boolean isUniqueInSection(List<Cell> grid, int cellNr) {
+        int value = grid.get(cellNr).getValue();
         Point p = SudokuHelper.getSection(cellNr, max);
         int itemsPerSection = max / 3;
         int sectionRow = p.y;
@@ -134,39 +136,39 @@ public class Solver extends AsyncTask<Grid, Void, Solver.Result> {
             for (int j = 0; j < itemsPerSection; j++) {
                 int currentCell = firstRow + j * max;
                 if (cellNr != currentCell)
-                    if (grid.getCell(currentCell).getValue() == value)
+                    if (grid.get(currentCell).getValue() == value)
                         return false;
             }
         }
         return true;
     }
 
-    public static class Result {
-        public enum Code { NO_ERROR, NOT_SOLVABLE, USER_CANCELLED }
+    static class Result {
+        enum Code { NO_ERROR, NOT_SOLVABLE, USER_CANCELLED }
 
-        private final Grid grid;
+        private final List<Cell> grid;
         private final Code error;
         private final long duration;
 
-        Result(Grid grid) {
+        Result(List<Cell> grid) {
             this(grid, Code.NO_ERROR);
         }
 
-        Result(Grid grid, Code error) {
+        Result(List<Cell> grid, Code error) {
             this.grid = grid;
             this.error = error;
             this.duration = calculateDuration();
         }
 
-        public Grid getGrid() {
+        List<Cell> getGrid() {
             return grid;
         }
 
-        public long getDuration() {
+        long getDuration() {
             return duration;
         }
 
-        public Code getError() {
+        Code getError() {
             return error;
         }
 
