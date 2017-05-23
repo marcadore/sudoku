@@ -1,24 +1,25 @@
 package ska.sudoku;
 
 import android.arch.lifecycle.LiveData;
+import android.support.annotation.NonNull;
 
 import java.util.List;
 
-class SolverObserver extends LiveData<Solver.Result> implements Solver.SolverCallback {
+class SolverObserver extends LiveData<SolverTask.Result> implements SolverTask.SolverCallback {
 
-    private Solver solver;
+    private SolverTask solverTask;
 
     void query(final List<Cell> grid, final int max) {
-        solver = new Solver(max, this);
-        solver.execute(grid);
+        solverTask = new SolverTask(max, this);
+        solverTask.execute(grid.toArray(new Cell[grid.size()]));
     }
 
     void cancel() {
-        if (solver != null) solver.cancel(true);
+        if (solverTask != null) solverTask.cancel(true);
     }
 
     @Override
-    public void onFinished(Solver.Result result) {
+    public void onFinished(@NonNull SolverTask.Result result) {
         setValue(result);
     }
 }

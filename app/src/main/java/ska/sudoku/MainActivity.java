@@ -10,7 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
 
-public class MainActivity extends LifecycleActivity implements View.OnClickListener, Observer<Solver.Result> {
+public class MainActivity extends LifecycleActivity implements View.OnClickListener, Observer<SolverTask.Result> {
 
     public static final int MAX = 9;
     private SudokuViewModel viewModel;
@@ -46,10 +46,10 @@ public class MainActivity extends LifecycleActivity implements View.OnClickListe
                 solveButton.setEnabled(false);
                 gridAdapter.setCellsDisabled(true);
                 progressBar.setVisibility(View.VISIBLE);
-                viewModel.solve();
+                viewModel.onSolveClicked();
                 break;
             case R.id.button_reset:
-                viewModel.cancel();
+                viewModel.onResetClicked();
                 gridAdapter.updateAdapter(viewModel.getGrid());
                 gridAdapter.setCellsDisabled(false);
                 solveButton.setEnabled(true);
@@ -58,7 +58,7 @@ public class MainActivity extends LifecycleActivity implements View.OnClickListe
     }
 
     @Override
-    public void onChanged(@Nullable Solver.Result result) {
+    public void onChanged(@Nullable SolverTask.Result result) {
         if (progressBar != null)
             progressBar.setVisibility(View.GONE);
         gridAdapter.updateAdapter(result.getGrid());
@@ -66,7 +66,7 @@ public class MainActivity extends LifecycleActivity implements View.OnClickListe
         if (msg != null) Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
-    private String getMessage(Solver.Result result) {
+    private String getMessage(SolverTask.Result result) {
         switch (result.getError()) {
             case NO_ERROR:
                 return getString(R.string.toast_solved_time, result.getDuration());

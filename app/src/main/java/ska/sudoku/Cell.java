@@ -1,6 +1,6 @@
 package ska.sudoku;
 
-class Cell {
+public class Cell {
 
     private int nr;
     private int value;

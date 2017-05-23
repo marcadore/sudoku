@@ -1,7 +1,6 @@
 package ska.sudoku;
 
 import android.graphics.Color;
-import android.graphics.Point;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -17,6 +16,7 @@ class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
     private List<Cell> grid;
     private final int maxValue;
     private boolean listenerDisabled = false;
+    private final SudokuHelper helper = new SudokuHelper();
 
     private ViewHolder.TextChangedListener listener = new GridAdapter.ViewHolder.TextChangedListener() {
         @Override
@@ -46,7 +46,7 @@ class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
         int value = grid.get(position).getValue();
         holder.editText.setText(value > 0 ? Integer.toString(value) : null);
         holder.editText.setBackgroundColor(
-                isEvenSection(position, maxValue) ? Color.LTGRAY : Color.WHITE);
+                helper.isEvenSection(position, maxValue) ? Color.LTGRAY : Color.WHITE);
     }
 
     @Override
@@ -61,11 +61,6 @@ class GridAdapter extends RecyclerView.Adapter<GridAdapter.ViewHolder> {
 
     void setCellsDisabled(boolean disabled) {
         listenerDisabled = disabled;
-    }
-
-    private boolean isEvenSection(int cellNr, int maxValue) {
-        Point p = SudokuHelper.getSection(cellNr, maxValue);
-        return p.equals(0, 0) || p.equals(2, 0) || p.equals(1, 1) || p.equals(0, 2) || p.equals(2, 2);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder implements TextWatcher {

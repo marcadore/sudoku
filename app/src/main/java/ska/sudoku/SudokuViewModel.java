@@ -27,11 +27,11 @@ class SudokuViewModel extends ViewModel {
         return solverObserver;
     }
 
-    void solve() {
+    void onSolveClicked() {
         solverObserver.query(grid, maxValue);
     }
 
-    void cancel() {
+    void onResetClicked() {
         solverObserver.cancel();
         grid.clear();
         initialize();
