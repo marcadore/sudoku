@@ -2,7 +2,7 @@ package ska.sudoku
 
 internal class Solver(private val max: Int) {
 
-    val helper = SudokuHelper()
+    private val helper = SudokuHelper()
 
     fun solveCell(grid: List<Cell>, cell: Cell): Boolean {
         if (cell.isPreFilled)
@@ -11,7 +11,7 @@ internal class Solver(private val max: Int) {
         var value = cell.value + 1
         while (value <= max) {
             when {
-                helper.checkValue(grid, cell, value, MainActivity.MAX) -> {
+                helper.checkValue(grid, cell, value, max) -> {
                     cell.value = value
                     return true
                 }

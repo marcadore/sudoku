@@ -7,18 +7,17 @@ import java.util.List;
 
 class SudokuViewModel extends ViewModel {
 
+    private static final int MAX = 9;
     private List<Cell> grid = new ArrayList<>();
-    private final int maxValue;
     private SolverObserver solverObserver;
 
     public SudokuViewModel() {
-        this.maxValue = MainActivity.MAX;
         solverObserver = new SolverObserver();
         initialize();
     }
 
     private void initialize() {
-        for (int i = 0; i < maxValue * maxValue; i++) {
+        for (int i = 0; i < MAX * MAX; i++) {
             grid.add(new Cell(i));
         }
     }
@@ -28,7 +27,7 @@ class SudokuViewModel extends ViewModel {
     }
 
     void onSolveClicked() {
-        solverObserver.query(grid, maxValue);
+        solverObserver.query(grid, MAX);
     }
 
     void onResetClicked() {
@@ -41,13 +40,17 @@ class SudokuViewModel extends ViewModel {
         return grid;
     }
 
+    int getMax() {
+        return MAX;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < grid.size(); i++) {
-            if (i % maxValue == 0)
+            if (i % MAX == 0)
                 builder.append('\n');
-            if (i % (maxValue * 3) == 0)
+            if (i % (MAX * 3) == 0)
                 builder.append("-------------------------------\n");
             if (i % 3 == 0)
                 builder.append('|');

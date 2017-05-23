@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 public class MainActivity extends LifecycleActivity implements View.OnClickListener, Observer<SolverTask.Result> {
 
-    public static final int MAX = 9;
     private SudokuViewModel viewModel;
     private View solveButton;
     private View progressBar;
@@ -30,10 +29,10 @@ public class MainActivity extends LifecycleActivity implements View.OnClickListe
 
         progressBar = findViewById(R.id.progress);
 
-        gridAdapter = new GridAdapter(viewModel.getGrid(), MAX);
+        gridAdapter = new GridAdapter(viewModel.getGrid(), viewModel.getMax());
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.grid);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, MAX));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, viewModel.getMax()));
         recyclerView.setAdapter(gridAdapter);
 
         viewModel.getResult().observe(this, this);
