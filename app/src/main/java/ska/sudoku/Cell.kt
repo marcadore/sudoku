@@ -5,7 +5,7 @@ class Cell internal constructor(internal val nr: Int) {
     var isPreFilled = false
         private set
 
-    fun setPreFilled(value: Int) {
+    fun prefill(value: Int) {
         isPreFilled = value != 0
         this.value = value
     }
