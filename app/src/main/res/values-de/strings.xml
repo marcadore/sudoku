@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Sudoku</string>
     <string name="button_solve">lösen</string>
     <string name="button_reset">zurücksetzen</string>
     <string name="toast_solved_time">gelöst in %d ms</string>

@@ -37,3 +37,5 @@ gradle.properties
 
 **/.DS_Store
 
+keystore.properties
+
