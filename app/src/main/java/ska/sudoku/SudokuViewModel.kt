@@ -1,30 +1,50 @@
 package ska.sudoku
 
-import android.arch.lifecycle.ViewModel
+import android.view.View
+import androidx.databinding.ObservableBoolean
+import androidx.databinding.ObservableInt
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 
 class SudokuViewModel : ViewModel() {
 
-    val max = 9
-    val grid: MutableList<Cell> = mutableListOf()
-    val solverObserver = SolverObserver()
-
-    init {
-        initialize()
+    companion object {
+        const val max = 9
     }
 
-    private fun initialize() {
-        (0..max * max).forEach { grid += Cell(it) }
-    }
+    private var grid: List<Cell> = cleanList()
+    private var solverTask: SolverTask? = null
+
+    val solvedEnabled = ObservableBoolean(true)
+    val loadingVisible = ObservableInt(View.GONE)
+    val gridAdapter = GridAdapter(grid, max)
+    val resultLiveData = MutableLiveData<Result>()
 
     fun onSolveClicked() {
-        solverObserver.query(grid, max)
+        gridAdapter.cellsDisabled = true
+        solvedEnabled.set(false)
+        loadingVisible.set(View.VISIBLE)
+
+        solverTask = SolverTask(max) { result ->
+            loadingVisible.set(View.GONE)
+            gridAdapter.updateAdapter(result.grid)
+            resultLiveData.value = result
+        }
+        solverTask?.execute(*grid.toTypedArray())
     }
 
     fun onResetClicked() {
-        solverObserver.cancel()
-        grid.clear()
-        initialize()
+        solverTask?.cancel(true)
+        grid = cleanList()
+        solvedEnabled.set(true)
+        gridAdapter.updateAdapter(grid)
+        gridAdapter.cellsDisabled = false
     }
+
+    private fun cleanList(): List<Cell> =
+            mutableListOf<Cell>().apply {
+                (0..max * max).forEach { this += Cell(it) }
+            }
 
     override fun toString(): String {
         val builder = StringBuilder()

@@ -2,7 +2,8 @@ package ska.sudoku
 
 class Result(
         val grid: List<Cell>,
-        val error: Code = Code.NO_ERROR) {
+        val error: Code = Code.NO_ERROR
+) {
 
     enum class Code {
         NO_ERROR,

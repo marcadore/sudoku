@@ -2,8 +2,6 @@ package ska.sudoku
 
 internal class Solver(private val max: Int) {
 
-    private val helper = SudokuHelper()
-
     fun solveCell(grid: List<Cell>, cell: Cell): Boolean {
         if (cell.isPreFilled)
             return true
@@ -11,7 +9,7 @@ internal class Solver(private val max: Int) {
         var value = cell.value + 1
         while (value <= max) {
             when {
-                helper.checkValue(grid, cell, value, max) -> {
+                checkValue(grid, cell, value, max) -> {
                     cell.value = value
                     return true
                 }
@@ -54,7 +52,7 @@ internal class Solver(private val max: Int) {
 
     private fun isUniqueInSection(grid: List<Cell>, cellNr: Int): Boolean {
         val value = grid[cellNr].value
-        val (sectionColumn, sectionRow) = helper.getSection(cellNr, max)
+        val (sectionColumn, sectionRow) = getSection(cellNr, max)
         val itemsPerSection = max / 3
 
         return (0 until itemsPerSection)

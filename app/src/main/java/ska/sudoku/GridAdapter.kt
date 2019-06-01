@@ -1,12 +1,12 @@
 package ska.sudoku
 
 import android.graphics.Color
-import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.EditText
+import androidx.recyclerview.widget.RecyclerView
 
 class GridAdapter(
         private var grid: List<Cell>,
@@ -14,11 +14,9 @@ class GridAdapter(
 ) : RecyclerView.Adapter<ViewHolder>() {
 
     var cellsDisabled = false
-    private val helper = SudokuHelper()
-    private val listener = object : TextChangedListener {
-        override fun onTextChanged(text: String, position: Int) {
-            if (text.isEmpty() || cellsDisabled) return
 
+    private val onTextChanged: (String, Int) -> Unit = { text, position ->
+        if (text.isNotEmpty() && !cellsDisabled) {
             val cell = grid[position]
             val value = Integer.valueOf(text)
 
@@ -30,7 +28,7 @@ class GridAdapter(
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.cell, parent, false) as EditText
 
-        return ViewHolder(view, listener)
+        return ViewHolder(view, onTextChanged)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -39,7 +37,7 @@ class GridAdapter(
                 if (value > 0) Integer.toString(value)
                 else null)
         holder.editText.setBackgroundColor(
-                if (helper.isEvenSection(position, maxValue)) Color.LTGRAY
+                if (isEvenSection(position, maxValue)) Color.LTGRAY
                 else Color.WHITE)
     }
 
@@ -54,7 +52,7 @@ class GridAdapter(
 
 class ViewHolder(
         val editText: EditText,
-        private val listener: TextChangedListener
+        private val onTextChanged: (String, Int) -> Unit
 ) : RecyclerView.ViewHolder(editText), TextWatcher {
 
     init {
@@ -62,7 +60,7 @@ class ViewHolder(
     }
 
     override fun afterTextChanged(s: Editable) {
-        listener.onTextChanged(editText.text.toString(), adapterPosition)
+        onTextChanged.invoke(editText.text.toString(), adapterPosition)
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -70,8 +68,4 @@ class ViewHolder(
 
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
     }
-}
-
-interface TextChangedListener {
-    fun onTextChanged(text: String, position: Int)
 }

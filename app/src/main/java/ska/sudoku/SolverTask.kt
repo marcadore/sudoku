@@ -2,7 +2,7 @@ package ska.sudoku
 
 import android.os.AsyncTask
 
-class SolverTask(private val max: Int, private val listener: SolverCallback) :
+class SolverTask(private val max: Int, private val callback: (Result) -> Unit) :
         AsyncTask<Cell, Void, Result>() {
 
     companion object {
@@ -13,10 +13,6 @@ class SolverTask(private val max: Int, private val listener: SolverCallback) :
         Solver(max)
     }
     private var currentCell: Int = 0
-
-    interface SolverCallback {
-        fun onFinished(result: Result)
-    }
 
     override fun onPreExecute() {
         super.onPreExecute()
@@ -51,12 +47,12 @@ class SolverTask(private val max: Int, private val listener: SolverCallback) :
     override fun onPostExecute(result: Result) {
         super.onPostExecute(result)
         System.out.println(result.grid.toString())
-        listener.onFinished(result)
+        callback.invoke(result)
     }
 
     override fun onCancelled(result: Result) {
         super.onCancelled(result)
-        listener.onFinished(result)
+        callback.invoke(result)
     }
 
     private fun setCurrentCell(success: Boolean) {
