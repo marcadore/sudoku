@@ -6,5 +6,5 @@ import androidx.recyclerview.widget.RecyclerView
 
 @BindingAdapter("spanCount")
 fun RecyclerView.spanCount(spanCount: Int) {
-        (layoutManager as? GridLayoutManager)?.spanCount = spanCount
-    }
+    (layoutManager as? GridLayoutManager)?.spanCount = spanCount
+}

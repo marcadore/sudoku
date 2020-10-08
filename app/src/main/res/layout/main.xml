@@ -30,7 +30,9 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_default="wrap"
             app:setHasFixedSize="@{true}"
-            app:spanCount="@{viewModel.max}"/>
+            app:spanCount="@{viewModel.max}"
+            tools:listitem="@layout/cell"
+            tools:spanCount="9"/>
 
         <Button
             android:id="@+id/button_reset"
