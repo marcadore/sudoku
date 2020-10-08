@@ -33,14 +33,16 @@ class SolverTask(private val max: Int, private val callback: (Result) -> Unit) :
             }
 
             val cell = grid[currentCell]
-            if (cell.isPreFilled) {
-                setCurrentCell(lastResult)
+            if (cell.state == Cell.State.USER) {
+                nextCell(lastResult)
                 continue
             }
             lastResult = solver.solveCell(grid, cell)
-            setCurrentCell(lastResult)
+            nextCell(lastResult)
             Thread.yield()
         }
+        grid.filter { it.state != Cell.State.USER }
+                .forEach { it.markAsSolved() }
         return Result(grid)
     }
 
@@ -55,7 +57,7 @@ class SolverTask(private val max: Int, private val callback: (Result) -> Unit) :
         callback.invoke(result)
     }
 
-    private fun setCurrentCell(success: Boolean) {
+    private fun nextCell(success: Boolean) {
         if (success) currentCell++
         else currentCell--
     }

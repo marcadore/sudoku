@@ -11,5 +11,5 @@
     android:maxLength="1"
     android:minHeight="40dp"
     android:minWidth="40dp"
-    android:textColor="#545422"
+    android:textColor="@color/military"
     tools:text="1" />

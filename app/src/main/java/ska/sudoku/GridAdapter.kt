@@ -1,6 +1,7 @@
 package ska.sudoku
 
 import android.graphics.Color
+import android.graphics.Typeface
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -32,13 +33,19 @@ class GridAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val value = grid[position].value
+        val cell = grid[position]
+
         holder.editText.setText(
-                if (value > 0) Integer.toString(value)
+                if (cell.value > 0) Integer.toString(cell.value)
                 else null)
         holder.editText.setBackgroundColor(
                 if (isEvenSection(position, maxValue)) Color.LTGRAY
                 else Color.WHITE)
+        holder.editText.setTypeface(holder.editText.typeface,
+                when (cell.state) {
+                    Cell.State.USER -> Typeface.BOLD
+                    else -> Typeface.NORMAL
+                })
     }
 
     override fun getItemCount(): Int =

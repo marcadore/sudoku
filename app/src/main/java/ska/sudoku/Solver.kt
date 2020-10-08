@@ -3,13 +3,13 @@ package ska.sudoku
 internal class Solver(private val max: Int) {
 
     fun solveCell(grid: List<Cell>, cell: Cell): Boolean {
-        if (cell.isPreFilled)
+        if (cell.state == Cell.State.USER)
             return true
 
         var value = cell.value + 1
         while (value <= max) {
             when {
-                checkValue(grid, cell, value, max) -> {
+                checkValue(grid, cell.nr, value, max) -> {
                     cell.value = value
                     return true
                 }
@@ -22,7 +22,7 @@ internal class Solver(private val max: Int) {
 
     fun isSolvable(grid: List<Cell>): Boolean {
         return grid
-                .filter { it.isPreFilled }
+                .filter { it.state == Cell.State.USER }
                 .none {
                     !isUniqueInRow(grid, it.nr) ||
                             !isUniqueInColumn(grid, it.nr) ||
