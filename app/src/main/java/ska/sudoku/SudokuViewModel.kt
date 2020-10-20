@@ -1,5 +1,6 @@
 package ska.sudoku
 
+import android.graphics.Rect
 import android.view.View
 import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableInt
@@ -58,4 +59,8 @@ class SudokuViewModel : ViewModel() {
         }
         return builder.toString()
     }
+
+    fun getCellRects(): List<Rect> = gridAdapter.getCellRects()
+
+    fun fillCell(position: Int, text: String) = gridAdapter.fillCell(position, text)
 }
