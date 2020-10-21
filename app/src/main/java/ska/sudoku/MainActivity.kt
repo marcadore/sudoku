@@ -37,10 +37,6 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
     }
 
-    private fun Result.message(): String =
-            when (error) {
-                Result.Code.NO_ERROR -> getString(R.string.toast_solved_time, duration)
-                Result.Code.NOT_SOLVABLE -> getString(R.string.toast_not_solvable)
-                else -> getString(R.string.toast_unknown_error)
-            }
+    private fun Result.message() =
+        error.message(this@MainActivity, duration)
 }

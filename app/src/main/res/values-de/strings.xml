@@ -4,6 +4,6 @@
     <string name="button_solve">lösen</string>
     <string name="button_reset">zurücksetzen</string>
     <string name="toast_solved_time">gelöst in %d ms</string>
-    <string name="toast_not_solvable">Dieses Sudoku is nicht lösbar!</string>
-    <string name="toast_unknown_error">Ein unbekannter Fehler ist aufgetreten!</string>
+    <string name="toast_not_solvable">Dieses Sudoku ist nicht lösbar!</string>
+    <string name="toast_user_cancelled">Löser abgebrochen!</string>
 </resources>

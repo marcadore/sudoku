@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="ska.sudoku.SudokuViewModel" />
@@ -62,7 +64,7 @@
             android:id="@+id/loading_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{viewModel.loadingVisible}"
+            android:visibility="@{viewModel.loadingVisible ? View.VISIBLE : View.GONE }"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
