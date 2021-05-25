@@ -3,19 +3,22 @@ package ska.sudoku
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import kotlinx.android.synthetic.main.main.*
 import ska.sudoku.databinding.MainBinding
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: SudokuViewModel
+    private lateinit var binding: MainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(SudokuViewModel::class.java)
-        DataBindingUtil.setContentView<MainBinding>(this, R.layout.main).viewModel = viewModel
+        
+        binding = MainBinding.inflate(layoutInflater)
+        binding.viewModel = viewModel
+        setContentView(binding.root)
+
         viewModel.resultLiveData.observe(this,
                 { result ->
                     Toast.makeText(this, result.message(), Toast.LENGTH_SHORT).show()
@@ -25,15 +28,15 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        overlay.touchedListener = viewModel::fillCell
-        overlay.post {
-            overlay.buttons.addAll(viewModel.getCellRects())
+        binding.overlay.touchedListener = viewModel::fillCell
+        binding.overlay.post {
+            binding.overlay.buttons.addAll(viewModel.getCellRects())
         }
     }
 
     override fun onPause() {
-        overlay.touchedListener = null
-        overlay.buttons.clear()
+        binding.overlay.touchedListener = null
+        binding.overlay.buttons.clear()
         super.onPause()
     }
 
