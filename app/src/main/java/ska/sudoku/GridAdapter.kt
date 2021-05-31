@@ -16,7 +16,7 @@ class GridAdapter(
 ) : RecyclerView.Adapter<ViewHolder>() {
 
     var cellsDisabled = false
-    private var cells = mutableListOf<TextView>()
+    private val cells = mutableListOf<TextView>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)

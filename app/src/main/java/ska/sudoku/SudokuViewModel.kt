@@ -1,12 +1,13 @@
 package ska.sudoku
 
 import android.graphics.Rect
-import androidx.databinding.ObservableBoolean
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
@@ -19,23 +20,32 @@ class SudokuViewModel : ViewModel() {
 
     private var grid: List<Cell> = cleanList()
 
-    val solvedEnabled = ObservableBoolean(true)
-    val loadingVisible = ObservableBoolean(false)
+    private val _solveEnabled = MutableLiveData<Boolean>()
+    val solveEnabled: LiveData<Boolean> = _solveEnabled
+
+    private val _loadingVisible = MutableLiveData<Boolean>()
+    val loadingVisible: LiveData<Boolean> = _loadingVisible
+
     val gridAdapter = GridAdapter(grid, max)
-    val resultLiveData = MutableLiveData<Result>()
+
+    private val _resultLiveData = MutableLiveData<Result>()
+    val resultLiveData: LiveData<Result> = _resultLiveData
+
+    private val cellRectsLiveData = MutableLiveData<List<Rect>>()
+
     var job: Job? = null
 
     fun onSolveClicked() {
         gridAdapter.cellsDisabled = true
-        solvedEnabled.set(false)
-        loadingVisible.set(true)
+        _solveEnabled.value = false
+        _loadingVisible.value = true
 
         job = viewModelScope.launch {
             val startTime = System.currentTimeMillis()
             val result = solve(max, grid, startTime)
-            loadingVisible.set(false)
+            _loadingVisible.value = false
             gridAdapter.updateAdapter(result.grid)
-            resultLiveData.value = result
+            _resultLiveData.value = result
             println(this@SudokuViewModel.toString())
         }
     }
@@ -43,11 +53,11 @@ class SudokuViewModel : ViewModel() {
     fun onResetClicked() {
         job?.cancel()
         grid = cleanList()
-        solvedEnabled.set(true)
+        _solveEnabled.value = true
         gridAdapter.updateAdapter(grid)
         gridAdapter.cellsDisabled = false
-        resultLiveData.value = Result(error = Result.Code.USER_CANCELLED)
-        loadingVisible.set(false)
+        _resultLiveData.value = Result(error = Result.Code.USER_CANCELLED)
+        _loadingVisible.value = false
     }
 
     private fun cleanList(): List<Cell> =
@@ -68,7 +78,16 @@ class SudokuViewModel : ViewModel() {
         return builder.toString()
     }
 
-    fun getCellRects(): List<Rect> = gridAdapter.getCellRects()
+    fun getCellRects(): LiveData<List<Rect>>{
+        cellRectsLiveData.value = null
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                delay(500)
+            }
+            cellRectsLiveData.value = gridAdapter.getCellRects()
+        }
+        return cellRectsLiveData
+    }
 
     fun fillCell(position: Int, text: String) = gridAdapter.fillCell(position, text)
 

@@ -2,14 +2,14 @@
 import com.github.benmanes.gradle.versions.VersionsPlugin
 
 buildscript {
-    ext.kotlin_version = '1.5.10'
+    ext.kotlin_version = '1.4.32'
     repositories {
         google()
         gradlePluginPortal()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0-beta02'
+        classpath 'com.android.tools.build:gradle:7.0.0-beta03'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-android-extensions:$kotlin_version"
         classpath "com.github.ben-manes:gradle-versions-plugin:0.38.0"
